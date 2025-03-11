@@ -32,3 +32,5 @@ if __name__ == '__main__':
     #US 
     df_us = loadExcelUS.create_df_us(excel_name)
     print(df_us)
+    host_dbb, user_dbb, pass_dbb, dbb_ministerio_educacion = cargar_variables_entorno()
+    loadDatabase(host_dbb, user_dbb, pass_dbb, dbb_ministerio_educacion).load_data_us(df_us)

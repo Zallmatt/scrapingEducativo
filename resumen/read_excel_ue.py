@@ -24,7 +24,7 @@ class loadExcelUE:
 
         # Crear un DataFrame con la estructura esperada
         columns = [
-            "año", "provincia", "ue_establecimientos",
+            "año", "provincia", "ue_establecimientos_publico",
         ]
 
         # Crear DataFrame con estructura fija
@@ -33,9 +33,13 @@ class loadExcelUE:
         df_educacion_comun_resumen_ue["año"] = 2023
         df_educacion_comun_resumen_ue.iloc[:, 2:] = df_data  # Rellenar con los demás datos
 
+        #Establecimiento
+        df_establecimiento_privado = loadExcelUE.read_ue_establecimientos(name, sheet_index)
+        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_establecimiento_privado[["provincia", "ue_establecimientos_privado"]], on="provincia", how="left")
+
         # Jardin
         df_jardin = loadExcelUE.read_eu_inicial(name, sheet_index)
-        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_jardin[["provincia", "us_inicial_publico", "us_inicial_privado"]], on="provincia", how="left")
+        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_jardin[["provincia", "ue_inicial_publico", "ue_inicial_privado"]], on="provincia", how="left")
         
         # Primaria
         df_primaria = loadExcelUE.read_eu_primaria(name, sheet_index)
@@ -50,6 +54,35 @@ class loadExcelUE:
         df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_superior_no_universitario[["provincia", "ue_sup_nouniv_publico", "ue_sup_nouniv_privado"]], on="provincia", how="left")
 
         return df_educacion_comun_resumen_ue
+
+    @staticmethod
+    def read_ue_establecimientos(name, sheet_index=1):
+        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
+        file_path = loadExcelUE.load_route_excel(name)
+
+        # Cargar la segunda hoja del archivo Excel
+        df = pd.read_excel(file_path, sheet_name=sheet_index, header=None)
+
+        # Extraer las provincias (Columna A, filas 46 a 71 → Índices 45 a 70)
+        df_provincias = df.iloc[45:71, 0].reset_index(drop=True)  # Columna A (Índice 0)
+
+        # Extraer datos de nivel inicial PRIVADO (Columnas E, F y G → Índices 4, 5 y 6)
+        df_data_privado = df.iloc[82:108, 1].reset_index(drop=True)
+        df_data_privado = df_data_privado.apply(pd.to_numeric, errors='coerce').fillna(0)
+
+        # Definir las columnas esperadas
+        columns = [
+            "año", "provincia", "ue_establecimientos_privado"
+        ]
+        
+        # Crear DataFrame con estructura fija
+        df_establecimiento_privado = pd.DataFrame(columns=columns)
+        # Asignar valores
+        df_establecimiento_privado["año"] = 2023  # Año fijo
+        df_establecimiento_privado["provincia"] = df_provincias  # Provincias
+        df_establecimiento_privado.iloc[:, 2:3] = df_data_privado  # Asignar datos públicos
+        
+        return df_establecimiento_privado
 
 
     @staticmethod
@@ -88,8 +121,8 @@ class loadExcelUE:
         df_jardin.iloc[:, 5:8] = df_data_privado  # Asignar datos privados
 
         # Crear las columnas sumadas
-        df_jardin["us_inicial_publico"] = df_jardin.iloc[:, 2:5].sum(axis=1)
-        df_jardin["us_inicial_privado"] = df_jardin.iloc[:, 5:8].sum(axis=1)
+        df_jardin["ue_inicial_publico"] = df_jardin.iloc[:, 2:5].sum(axis=1)
+        df_jardin["ue_inicial_privado"] = df_jardin.iloc[:, 5:8].sum(axis=1)
 
         # Eliminar las columnas originales si ya no son necesarias
         df_jardin = df_jardin.drop(columns=columns[2:8])

@@ -24,7 +24,7 @@ class loadExcelUS:
 
         # Crear un DataFrame con la estructura esperada
         columns = [
-            "año", "provincia", "us_localizaciones",
+            "año", "provincia", "us_localizaciones_pubico",
         ]
 
         # Crear DataFrame con estructura fija
@@ -33,27 +33,60 @@ class loadExcelUS:
         df_educacion_comun_resumen_us["año"] = 2023
         df_educacion_comun_resumen_us.iloc[:, 2:] = df_data  # Rellenar con los demás datos
 
+        #Establecimiento
+        df_establecimiento_privado = loadExcelUS.read_us_localizaciones(name, sheet_index)
+        df_educacion_comun_resumen_us = df_educacion_comun_resumen_us.merge(df_establecimiento_privado[["provincia", "us_localizaciones_privado"]], on="provincia", how="left")
         # Jardin
-        df_jardin = loadExcelUS.read_eu_inicial(name, sheet_index)
+        df_jardin = loadExcelUS.read_us_inicial(name, sheet_index)
         df_educacion_comun_resumen_us = df_educacion_comun_resumen_us.merge(df_jardin[["provincia", "us_inicial_publico", "us_inicial_privado"]], on="provincia", how="left")
         
         # Primaria
-        df_primaria = loadExcelUS.read_eu_primaria(name, sheet_index)
-        df_educacion_comun_resumen_us = df_educacion_comun_resumen_us.merge(df_primaria[["provincia", "ue_primaria_publico", "ue_primaria_privado"]], on="provincia", how="left")
+        df_primaria = loadExcelUS.read_us_primaria(name, sheet_index)
+        df_educacion_comun_resumen_us = df_educacion_comun_resumen_us.merge(df_primaria[["provincia", "us_primaria_publico", "us_primaria_privado"]], on="provincia", how="left")
 
         # Secundaria
-        df_secundaria = loadExcelUS.read_eu_secundaria(name, sheet_index)
-        df_educacion_comun_resumen_us = df_educacion_comun_resumen_us.merge(df_secundaria[["provincia", "ue_secundaria_publico", "ue_secundaria_privado"]], on="provincia", how="left")
+        df_secundaria = loadExcelUS.read_us_secundaria(name, sheet_index)
+        df_educacion_comun_resumen_us = df_educacion_comun_resumen_us.merge(df_secundaria[["provincia", "us_secundaria_publico", "us_secundaria_privado"]], on="provincia", how="left")
 
         # Superior no Universitario
-        df_superior_no_universitario = loadExcelUS.read_eu_no_universitario(name, sheet_index)
-        df_educacion_comun_resumen_us = df_educacion_comun_resumen_us.merge(df_superior_no_universitario[["provincia", "ue_sup_nouniv_publico", "ue_sup_nouniv_privado"]], on="provincia", how="left")
+        df_superior_no_universitario = loadExcelUS.read_us_no_universitario(name, sheet_index)
+        df_educacion_comun_resumen_us = df_educacion_comun_resumen_us.merge(df_superior_no_universitario[["provincia", "us_sup_nouniv_publico", "us_sup_nouniv_privado"]], on="provincia", how="left")
 
         return df_educacion_comun_resumen_us
+    
+    @staticmethod
+    def read_us_localizaciones(name, sheet_index=2):
+        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
+        file_path = loadExcelUS.load_route_excel(name)
+
+        # Cargar la segunda hoja del archivo Excel
+        df = pd.read_excel(file_path, sheet_name=sheet_index, header=None)
+
+        # Extraer las provincias (Columna A, filas 46 a 71 → Índices 45 a 70)
+        df_provincias = df.iloc[45:71, 0].reset_index(drop=True)  # Columna A (Índice 0)
+
+        # Extraer datos de nivel inicial PRIVADO (Columnas E, F y G → Índices 4, 5 y 6)
+        df_data_privado = df.iloc[82:108, 1].reset_index(drop=True)
+        df_data_privado = df_data_privado.apply(pd.to_numeric, errors='coerce').fillna(0)
+
+        # Definir las columnas esperadas
+        columns = [
+            "año", "provincia", "us_localizaciones_privado"
+        ]
+        
+        # Crear DataFrame con estructura fija
+        df_establecimiento_privado = pd.DataFrame(columns=columns)
+        # Asignar valores
+        df_establecimiento_privado["año"] = 2023  # Año fijo
+        df_establecimiento_privado["provincia"] = df_provincias  # Provincias
+        df_establecimiento_privado.iloc[:, 2:3] = df_data_privado  # Asignar datos públicos
+        
+        return df_establecimiento_privado
+
 
 
     @staticmethod
-    def read_eu_inicial(name, sheet_index=1):
+    def read_us_inicial(name, sheet_index=2):
         """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
         file_path = loadExcelUS.load_route_excel(name)
 
@@ -97,7 +130,7 @@ class loadExcelUS:
         return df_jardin
     
     @staticmethod
-    def read_eu_primaria(name, sheet_index=1):
+    def read_us_primaria(name, sheet_index=2):
         """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
         file_path = loadExcelUS.load_route_excel(name)
 
@@ -131,8 +164,8 @@ class loadExcelUS:
         df_primaria.iloc[:, 4:6] = df_data_privado  # Asignar datos privados
 
         # Crear las columnas sumadas
-        df_primaria["ue_primaria_publico"] = df_primaria.iloc[:, 2:4].sum(axis=1)
-        df_primaria["ue_primaria_privado"] = df_primaria.iloc[:, 4:6].sum(axis=1)
+        df_primaria["us_primaria_publico"] = df_primaria.iloc[:, 2:4].sum(axis=1)
+        df_primaria["us_primaria_privado"] = df_primaria.iloc[:, 4:6].sum(axis=1)
 
         # Eliminar las columnas originales si ya no son necesarias
         df_primaria = df_primaria.drop(columns=columns[2:8])
@@ -140,7 +173,7 @@ class loadExcelUS:
         return df_primaria
     
     @staticmethod
-    def read_eu_secundaria(name, sheet_index=1):
+    def read_us_secundaria(name, sheet_index=2):
         """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
         file_path = loadExcelUS.load_route_excel(name)
 
@@ -175,8 +208,8 @@ class loadExcelUS:
         df_secundaria.iloc[:, 5:8] = df_data_privado  # Asignar datos privados
 
         # Crear las columnas sumadas
-        df_secundaria["ue_secundaria_publico"] = df_secundaria.iloc[:, 2:5].sum(axis=1)
-        df_secundaria["ue_secundaria_privado"] = df_secundaria.iloc[:, 5:8].sum(axis=1)
+        df_secundaria["us_secundaria_publico"] = df_secundaria.iloc[:, 2:5].sum(axis=1)
+        df_secundaria["us_secundaria_privado"] = df_secundaria.iloc[:, 5:8].sum(axis=1)
 
         # Eliminar las columnas originales si ya no son necesarias
         df_secundaria = df_secundaria.drop(columns=columns[2:8])
@@ -184,7 +217,7 @@ class loadExcelUS:
         return df_secundaria
     
     @staticmethod
-    def read_eu_no_universitario(name, sheet_index=1):
+    def read_us_no_universitario(name, sheet_index=2):
         """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
         file_path = loadExcelUS.load_route_excel(name)
 
@@ -206,8 +239,8 @@ class loadExcelUS:
         # Definir las columnas esperadas
         columns = [
             "año", "provincia", 
-            "ue_sup_nouniv_publico", 
-            "ue_sup_nouniv_privado", 
+            "us_sup_nouniv_publico", 
+            "us_sup_nouniv_privado", 
         ]
         
         # Crear DataFrame con estructura fija
