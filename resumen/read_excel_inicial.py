@@ -8,7 +8,7 @@ class ReadExcelInicialAsistencia:
         file_path = os.path.join(os.path.dirname(__file__), "files", name)
         return file_path  # Retorna la ruta completa del archivo
     
-    def create_df_inicial_asistencia(self, name):
+    def create_df_inicial_asistencia(self, name, año):
         sheet_index = "Alu_asistencia 5"
 
         """Carga los datos de la segunda hoja del Excel, tomando provincias de la fila 46 a la 71 y agrega los datos de nivel inicial desde loadEUInicial"""
@@ -32,7 +32,7 @@ class ReadExcelInicialAsistencia:
         # Crear DataFrame con estructura fija
         df_inicial_asistencia = pd.DataFrame(columns=columns)
         df_inicial_asistencia["id_provincia"] = df_provincias  # Agregar provincias
-        df_inicial_asistencia["año"] = 2023
+        df_inicial_asistencia["año"] = año
 
         # Datos públicos
         df_inicial_asistencia["al_asistencia_publico"] = df_datos_publico.iloc[:, 0]

@@ -9,7 +9,7 @@ class loadExcelUE:
         return file_path  # Retorna la ruta completa del archivo
 
     @staticmethod
-    def create_df_ue(name, sheet_index=1):
+    def create_df_ue(name, año, sheet_index=1):
         """Carga los datos de la segunda hoja del Excel, tomando provincias de la fila 46 a la 71 y agrega los datos de nivel inicial desde loadEUInicial"""
         file_path = loadExcelUE.load_route_excel(name)
 
@@ -30,28 +30,28 @@ class loadExcelUE:
         # Crear DataFrame con estructura fija
         df_educacion_comun_resumen_ue = pd.DataFrame(columns=columns)
         df_educacion_comun_resumen_ue["id_provincia"] = df_provincias  # Agregar provincias
-        df_educacion_comun_resumen_ue["año"] = 2023
+        df_educacion_comun_resumen_ue["año"] = año
         df_educacion_comun_resumen_ue.iloc[:, 2:] = df_data  # Rellenar con los demás datos
 
         #Establecimiento
         df_establecimiento_privado = loadExcelUE.read_ue_establecimientos(name, sheet_index)
-        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_establecimiento_privado[["provincia", "ue_establecimientos_privado"]], on="provincia", how="left")
+        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_establecimiento_privado[["id_provincia", "ue_establecimientos_privado"]], on="id_provincia", how="left")
 
         # Jardin
         df_jardin = loadExcelUE.read_eu_inicial(name, sheet_index)
-        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_jardin[["provincia", "ue_inicial_publico", "ue_inicial_privado"]], on="provincia", how="left")
+        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_jardin[["id_provincia", "ue_inicial_publico", "ue_inicial_privado"]], on="id_provincia", how="left")
         
         # Primaria
         df_primaria = loadExcelUE.read_eu_primaria(name, sheet_index)
-        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_primaria[["provincia", "ue_primaria_publico", "ue_primaria_privado"]], on="provincia", how="left")
+        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_primaria[["id_provincia", "ue_primaria_publico", "ue_primaria_privado"]], on="id_provincia", how="left")
 
         # Secundaria
         df_secundaria = loadExcelUE.read_eu_secundaria(name, sheet_index)
-        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_secundaria[["provincia", "ue_secundaria_publico", "ue_secundaria_privado"]], on="provincia", how="left")
+        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_secundaria[["id_provincia", "ue_secundaria_publico", "ue_secundaria_privado"]], on="id_provincia", how="left")
 
         # Superior no Universitario
         df_superior_no_universitario = loadExcelUE.read_eu_no_universitario(name, sheet_index)
-        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_superior_no_universitario[["provincia", "ue_sup_nouniv_publico", "ue_sup_nouniv_privado"]], on="provincia", how="left")
+        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_superior_no_universitario[["id_provincia", "ue_sup_nouniv_publico", "ue_sup_nouniv_privado"]], on="id_provincia", how="left")
 
         # Mapa de provincias a códigos INDEC
         codigo_provincias = {
@@ -107,14 +107,14 @@ class loadExcelUE:
 
         # Definir las columnas esperadas
         columns = [
-            "año", "provincia", "ue_establecimientos_privado"
+            "año", "id_provincia", "ue_establecimientos_privado"
         ]
         
         # Crear DataFrame con estructura fija
         df_establecimiento_privado = pd.DataFrame(columns=columns)
         # Asignar valores
         df_establecimiento_privado["año"] = 2023  # Año fijo
-        df_establecimiento_privado["provincia"] = df_provincias  # Provincias
+        df_establecimiento_privado["id_provincia"] = df_provincias  # Provincias
         df_establecimiento_privado.iloc[:, 2:3] = df_data_privado  # Asignar datos públicos
         
         return df_establecimiento_privado
@@ -142,7 +142,7 @@ class loadExcelUE:
 
         # Definir las columnas esperadas
         columns = [
-            "año", "provincia", 
+            "año", "id_provincia", 
             "inicial_jardin_maternal_publico", "inicial_jardin_infantes_publico", "inicial_jardin_ambos_publico",
             "inicial_jardin_maternal_privado", "inicial_jardin_infantes_privado", "inicial_jardin_ambos_privado"
         ]
@@ -151,7 +151,7 @@ class loadExcelUE:
         df_jardin = pd.DataFrame(columns=columns)
         # Asignar valores
         df_jardin["año"] = 2023  # Año fijo
-        df_jardin["provincia"] = df_provincias  # Provincias
+        df_jardin["id_provincia"] = df_provincias  # Provincias
         df_jardin.iloc[:, 2:5] = df_data_publico  # Asignar datos públicos
         df_jardin.iloc[:, 5:8] = df_data_privado  # Asignar datos privados
 
@@ -186,7 +186,7 @@ class loadExcelUE:
 
         # Definir las columnas esperadas
         columns = [
-            "año", "provincia", 
+            "año", "id_provincia", 
             "primaria_6_años_publico", "primaria_7_años_publico", "primaria_6_años_privado",
             "primaria_7_años_privado"]
         
@@ -194,7 +194,7 @@ class loadExcelUE:
         df_primaria = pd.DataFrame(columns=columns)
         # Asignar valores
         df_primaria["año"] = 2023  # Año fijo
-        df_primaria["provincia"] = df_provincias  # Provincias
+        df_primaria["id_provincia"] = df_provincias  # Provincias
         df_primaria.iloc[:, 2:4] = df_data_publico  # Asignar datos públicos
         df_primaria.iloc[:, 4:6] = df_data_privado  # Asignar datos privados
 
@@ -229,7 +229,7 @@ class loadExcelUE:
 
         # Definir las columnas esperadas
         columns = [
-            "año", "provincia", 
+            "año", "id_provincia", 
             "secundaria_ciclo_basico_publico", "secundaria_ciclo_orientado_publico", "secundaria_ciclo_basico_y_orientado_publico",
             "secundaria_ciclo_basico_privado", "secundaria_ciclo_orientado_privado", "secundaria_ciclo_basico_y_orientado_privado"
         ]
@@ -238,7 +238,7 @@ class loadExcelUE:
         df_secundaria = pd.DataFrame(columns=columns)
         # Asignar valores
         df_secundaria["año"] = 2023  # Año fijo
-        df_secundaria["provincia"] = df_provincias  # Provincias
+        df_secundaria["id_provincia"] = df_provincias  # Provincias
         df_secundaria.iloc[:, 2:5] = df_data_publico  # Asignar datos públicos
         df_secundaria.iloc[:, 5:8] = df_data_privado  # Asignar datos privados
 
@@ -273,7 +273,7 @@ class loadExcelUE:
 
         # Definir las columnas esperadas
         columns = [
-            "año", "provincia", 
+            "año", "id_provincia", 
             "ue_sup_nouniv_publico", 
             "ue_sup_nouniv_privado", 
         ]
@@ -282,7 +282,7 @@ class loadExcelUE:
         df_superior_no_universitario = pd.DataFrame(columns=columns)
         # Asignar valores
         df_superior_no_universitario["año"] = 2023  # Año fijo
-        df_superior_no_universitario["provincia"] = df_provincias  # Provincias
+        df_superior_no_universitario["id_provincia"] = df_provincias  # Provincias
         df_superior_no_universitario.iloc[:, 2:3] = df_data_publico  # Asignar datos públicos
         df_superior_no_universitario.iloc[:, 3:4] = df_data_privado  # Asignar datos privados
         

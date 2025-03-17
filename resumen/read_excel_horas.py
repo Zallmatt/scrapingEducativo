@@ -8,7 +8,7 @@ class ReadExcelHoras:
         file_path = os.path.join(os.path.dirname(__file__), "files", name)
         return file_path  # Retorna la ruta completa del archivo
     
-    def create_df_cargos(self, name):
+    def create_df_cargos(self, name, año):
         
         sheet_index="Horas"
 
@@ -42,7 +42,7 @@ class ReadExcelHoras:
         # Crear DataFrame con estructura fija
         df_educacion_comun_horas = pd.DataFrame(columns=columns)
         df_educacion_comun_horas["id_provincia"] = df_provincias  # Agregar provincias
-        df_educacion_comun_horas["año"] = 2023
+        df_educacion_comun_horas["año"] = año
 
         #Datos publicos
         df_educacion_comun_horas["h_planta_inicial_publico"] = df_datos_publico.iloc[:, 0]

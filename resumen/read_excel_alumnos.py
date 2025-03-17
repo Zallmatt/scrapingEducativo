@@ -7,8 +7,7 @@ class ReadExcelAlumnos:
         file_path = os.path.join(os.path.dirname(__file__), "files", name)
         return file_path  # Retorna la ruta completa del archivo
     
-    def create_df_alumnos(self):
-        name = "RESUMEN_2023.xlsx"
+    def create_df_alumnos(self, name, año):
         sheet_name = "Alumnos"  # Nombre de la hoja en el Excel
 
         file_path = self.load_route_excel(name)
@@ -33,7 +32,7 @@ class ReadExcelAlumnos:
 
         df_alumnos = pd.DataFrame(columns=columns)
         df_alumnos["id_provincia"] = df_provincias
-        df_alumnos["año"] = 2023  # Año fijo
+        df_alumnos["año"] = año  # Año fijo
 
         # Asignar los datos públicos y privados
         df_alumnos["al_inicial_publico"] = df_datos_publico.iloc[:, 0]

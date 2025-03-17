@@ -8,7 +8,7 @@ class ReadExcelSecundarioRepitentes:
         file_path = os.path.join(os.path.dirname(__file__), "files", name)
         return file_path  # Retorna la ruta completa del archivo
     
-    def create_df_secundario_repitentes(self, name):
+    def create_df_secundario_repitentes(self, name, año):
         sheet_index = "Repitientes"
 
         """Carga los datos de la segunda hoja del Excel, tomando provincias de la fila 46 a la 71 y agrega los datos de nivel inicial desde loadEUInicial"""
@@ -35,7 +35,7 @@ class ReadExcelSecundarioRepitentes:
         # Crear DataFrame con estructura fija
         df_nivel_secundario_repitentes = pd.DataFrame(columns=columns)
         df_nivel_secundario_repitentes["id_provincia"] = df_provincias  # Agregar provincias
-        df_nivel_secundario_repitentes["año"] = 2023
+        df_nivel_secundario_repitentes["año"] = año
 
         # Datos públicos
         df_nivel_secundario_repitentes["total_publico"] = df_datos_publico.iloc[:, 0]
