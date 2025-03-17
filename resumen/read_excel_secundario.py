@@ -27,14 +27,14 @@ class ReadExcelSecundarioRepitentes:
 
         # Crear un DataFrame con la estructura esperada
         columns = [
-            "año", "provincia", 
+            "año", "id_provincia", 
             "total_publico", "7mo_publico", "8vo_publico", "9no_publico", "10mo_publico", "11vo_publico", "12vo_publico", "13vo_y_14vo_publico", "planes_no_graduados_publico",
             "total_privado", "7mo_privado", "8vo_privado", "9no_privado", "10mo_privado", "11vo_privado", "12vo_privado", "13vo_y_14vo_privado", "planes_no_graduados_privado"
         ]
 
         # Crear DataFrame con estructura fija
         df_nivel_secundario_repitentes = pd.DataFrame(columns=columns)
-        df_nivel_secundario_repitentes["provincia"] = df_provincias  # Agregar provincias
+        df_nivel_secundario_repitentes["id_provincia"] = df_provincias  # Agregar provincias
         df_nivel_secundario_repitentes["año"] = 2023
 
         # Datos públicos
@@ -62,9 +62,41 @@ class ReadExcelSecundarioRepitentes:
 
         # Convertir NaN a None (NULL en la base de datos)
         df_nivel_secundario_repitentes = df_nivel_secundario_repitentes.where(pd.notna(df_nivel_secundario_repitentes), None)
+        codigo_provincias = {
+            "Nacion": 1,
+            "Ciudad de Buenos Aires": 2,
+            "Buenos Aires": 6,
+            "Catamarca": 10,
+            "Córdoba": 14,
+            "Corrientes": 18,
+            "Chaco": 22,
+            "Chubut": 26,
+            "Entre Ríos": 30,
+            "Formosa": 34,
+            "Jujuy": 38,
+            "La Pampa": 42,
+            "La Rioja": 46,
+            "Mendoza": 50,
+            "Misiones": 54,
+            "Neuquén": 58,
+            "Río Negro": 62,
+            "Salta": 66,
+            "San Juan": 70,
+            "San Luis": 74,
+            "Santa Cruz": 78,
+            "Santa Fe": 82,
+            "Santiago del Estero": 86,
+            "Tucumán": 90,
+            "Tierra del Fuego": 94
+        }
+
+        # Reemplazar las provincias por los códigos correspondientes
+        df_nivel_secundario_repitentes["id_provincia"] = df_nivel_secundario_repitentes["id_provincia"].replace(codigo_provincias)
+        
+        # Limpieza
+        df_nivel_secundario_repitentes = df_nivel_secundario_repitentes[~df_nivel_secundario_repitentes["id_provincia"].isin(["Conurbano", "Buenos Aires Resto"])]
 
         for col in df_nivel_secundario_repitentes.columns:
-            if col != "provincia":
-                df_nivel_secundario_repitentes[col] = df_nivel_secundario_repitentes[col].apply(lambda x: None if x is None else int(x))
+            df_nivel_secundario_repitentes[col] = df_nivel_secundario_repitentes[col].apply(lambda x: None if x is None else int(x))
         
         return df_nivel_secundario_repitentes

@@ -28,7 +28,7 @@ class ReadExcelHoras:
 
         # Crear un DataFrame con la estructura esperada
         columns = [
-            "año", "provincia",
+            "año", "id_provincia",
             "h_planta_inicial_publico", "h_planta_inicial_privado",
             "h_planta_primaria_publico", "h_planta_primaria_privado",
             "h_planta_secundaria_publico", "h_planta_secundaria_privado",
@@ -41,7 +41,7 @@ class ReadExcelHoras:
 
         # Crear DataFrame con estructura fija
         df_educacion_comun_horas = pd.DataFrame(columns=columns)
-        df_educacion_comun_horas["provincia"] = df_provincias  # Agregar provincias
+        df_educacion_comun_horas["id_provincia"] = df_provincias  # Agregar provincias
         df_educacion_comun_horas["año"] = 2023
 
         #Datos publicos
@@ -65,11 +65,43 @@ class ReadExcelHoras:
 
         # Convertir NaN a None (NULL en la base de datos)
         df_educacion_comun_horas = df_educacion_comun_horas.where(pd.notna(df_educacion_comun_horas), None)
+        codigo_provincias = {
+            "Nacion": 1,
+            "Ciudad de Buenos Aires": 2,
+            "Buenos Aires": 6,
+            "Catamarca": 10,
+            "Córdoba": 14,
+            "Corrientes": 18,
+            "Chaco": 22,
+            "Chubut": 26,
+            "Entre Ríos": 30,
+            "Formosa": 34,
+            "Jujuy": 38,
+            "La Pampa": 42,
+            "La Rioja": 46,
+            "Mendoza": 50,
+            "Misiones": 54,
+            "Neuquén": 58,
+            "Río Negro": 62,
+            "Salta": 66,
+            "San Juan": 70,
+            "San Luis": 74,
+            "Santa Cruz": 78,
+            "Santa Fe": 82,
+            "Santiago del Estero": 86,
+            "Tucumán": 90,
+            "Tierra del Fuego": 94
+        }
+
+        # Reemplazar las provincias por los códigos correspondientes
+        df_educacion_comun_horas["id_provincia"] = df_educacion_comun_horas["id_provincia"].replace(codigo_provincias)
+        
+        # Limpieza
+        df_educacion_comun_horas = df_educacion_comun_horas[~df_educacion_comun_horas["id_provincia"].isin(["Conurbano", "Buenos Aires Resto"])]
 
         # Convertir todas las columnas excepto 'provincia' a tipo entero, manteniendo None como NULL
         for col in df_educacion_comun_horas.columns:
-            if col != "provincia":
-                df_educacion_comun_horas[col] = df_educacion_comun_horas[col].apply(lambda x: None if x is None else int(x))
+            df_educacion_comun_horas[col] = df_educacion_comun_horas[col].apply(lambda x: None if x is None else int(x))
         
         return df_educacion_comun_horas
 

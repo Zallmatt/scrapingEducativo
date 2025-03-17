@@ -24,12 +24,12 @@ class loadExcelUS:
 
         # Crear un DataFrame con la estructura esperada
         columns = [
-            "año", "provincia", "us_localizaciones_pubico",
+            "año", "id_provincia", "us_localizaciones_pubico",
         ]
 
         # Crear DataFrame con estructura fija
         df_educacion_comun_resumen_us = pd.DataFrame(columns=columns)
-        df_educacion_comun_resumen_us["provincia"] = df_provincias  # Agregar provincias
+        df_educacion_comun_resumen_us["id_provincia"] = df_provincias  # Agregar provincias
         df_educacion_comun_resumen_us["año"] = 2023
         df_educacion_comun_resumen_us.iloc[:, 2:] = df_data  # Rellenar con los demás datos
 
@@ -51,6 +51,41 @@ class loadExcelUS:
         # Superior no Universitario
         df_superior_no_universitario = loadExcelUS.read_us_no_universitario(name, sheet_index)
         df_educacion_comun_resumen_us = df_educacion_comun_resumen_us.merge(df_superior_no_universitario[["provincia", "us_sup_nouniv_publico", "us_sup_nouniv_privado"]], on="provincia", how="left")
+
+        # Mapa de provincias a códigos INDEC
+        codigo_provincias = {
+            "Nacion": 1,
+            "Ciudad de Buenos Aires": 2,
+            "Buenos Aires": 6,
+            "Catamarca": 10,
+            "Córdoba": 14,
+            "Corrientes": 18,
+            "Chaco": 22,
+            "Chubut": 26,
+            "Entre Ríos": 30,
+            "Formosa": 34,
+            "Jujuy": 38,
+            "La Pampa": 42,
+            "La Rioja": 46,
+            "Mendoza": 50,
+            "Misiones": 54,
+            "Neuquén": 58,
+            "Río Negro": 62,
+            "Salta": 66,
+            "San Juan": 70,
+            "San Luis": 74,
+            "Santa Cruz": 78,
+            "Santa Fe": 82,
+            "Santiago del Estero": 86,
+            "Tucumán": 90,
+            "Tierra del Fuego": 94
+        }
+
+        # Reemplazar las provincias por los códigos correspondientes
+        df_educacion_comun_resumen_us["id_provincia"] = df_educacion_comun_resumen_us["id_provincia"].replace(codigo_provincias)
+        
+        # Limpieza
+        df_educacion_comun_resumen_us = df_educacion_comun_resumen_us[~df_educacion_comun_resumen_us["id_provincia"].isin(["Conurbano", "Buenos Aires Resto"])]
 
         return df_educacion_comun_resumen_us
     

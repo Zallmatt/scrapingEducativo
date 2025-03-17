@@ -24,12 +24,12 @@ class loadExcelUE:
 
         # Crear un DataFrame con la estructura esperada
         columns = [
-            "año", "provincia", "ue_establecimientos_publico",
+            "año", "id_provincia", "ue_establecimientos_publico",
         ]
 
         # Crear DataFrame con estructura fija
         df_educacion_comun_resumen_ue = pd.DataFrame(columns=columns)
-        df_educacion_comun_resumen_ue["provincia"] = df_provincias  # Agregar provincias
+        df_educacion_comun_resumen_ue["id_provincia"] = df_provincias  # Agregar provincias
         df_educacion_comun_resumen_ue["año"] = 2023
         df_educacion_comun_resumen_ue.iloc[:, 2:] = df_data  # Rellenar con los demás datos
 
@@ -83,10 +83,11 @@ class loadExcelUE:
         }
 
         # Reemplazar las provincias por los códigos correspondientes
-        df_educacion_comun_resumen_ue["provincia"] = df_educacion_comun_resumen_ue["provincia"].replace(codigo_provincias)
+        df_educacion_comun_resumen_ue["id_provincia"] = df_educacion_comun_resumen_ue["id_provincia"].replace(codigo_provincias)
         
         # Limpieza
-        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue[~df_educacion_comun_resumen_ue["provincia"].isin(["Conurbano", "Buenos Aires Resto"])]
+        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue[~df_educacion_comun_resumen_ue["id_provincia"].isin(["Conurbano", "Buenos Aires Resto"])]
+        
         return df_educacion_comun_resumen_ue
 
     @staticmethod
