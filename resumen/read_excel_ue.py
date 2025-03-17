@@ -53,6 +53,40 @@ class loadExcelUE:
         df_superior_no_universitario = loadExcelUE.read_eu_no_universitario(name, sheet_index)
         df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue.merge(df_superior_no_universitario[["provincia", "ue_sup_nouniv_publico", "ue_sup_nouniv_privado"]], on="provincia", how="left")
 
+        # Mapa de provincias a códigos INDEC
+        codigo_provincias = {
+            "Nacion": 1,
+            "Ciudad de Buenos Aires": 2,
+            "Buenos Aires": 6,
+            "Catamarca": 10,
+            "Córdoba": 14,
+            "Corrientes": 18,
+            "Chaco": 22,
+            "Chubut": 26,
+            "Entre Ríos": 30,
+            "Formosa": 34,
+            "Jujuy": 38,
+            "La Pampa": 42,
+            "La Rioja": 46,
+            "Mendoza": 50,
+            "Misiones": 54,
+            "Neuquén": 58,
+            "Río Negro": 62,
+            "Salta": 66,
+            "San Juan": 70,
+            "San Luis": 74,
+            "Santa Cruz": 78,
+            "Santa Fe": 82,
+            "Santiago del Estero": 86,
+            "Tucumán": 90,
+            "Tierra del Fuego": 94
+        }
+
+        # Reemplazar las provincias por los códigos correspondientes
+        df_educacion_comun_resumen_ue["provincia"] = df_educacion_comun_resumen_ue["provincia"].replace(codigo_provincias)
+        
+        # Limpieza
+        df_educacion_comun_resumen_ue = df_educacion_comun_resumen_ue[~df_educacion_comun_resumen_ue["provincia"].isin(["Conurbano", "Buenos Aires Resto"])]
         return df_educacion_comun_resumen_ue
 
     @staticmethod
