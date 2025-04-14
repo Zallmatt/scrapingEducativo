@@ -10,8 +10,6 @@ from load_database import loadDatabase
 from dotenv import load_dotenv
 import os
 
-
-
 def cargar_variables_entorno():
     """Carga las variables de entorno necesarias para la conexión."""
     load_dotenv()
@@ -29,7 +27,7 @@ def cargar_variables_entorno():
     return host_dbb, user_dbb, pass_dbb, dbb_datalake
 
 if __name__ == '__main__':
-    año = 2025
+    año = 2023
     excel_name="RESUMEN_2023.xlsx"
     name_inicial = "INICIAL_2023.xlsx"
     name_primario = "PRIMARIO_2023.xlsx"
