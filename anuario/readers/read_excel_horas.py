@@ -4,9 +4,7 @@ import pandas as pd
 class ReadExcelHoras:
     @staticmethod
     def load_route_excel(name):
-        """Obtiene la ruta absoluta del archivo en la carpeta 'files'"""
-        file_path = os.path.join(os.path.dirname(__file__), "files", name)
-        return file_path  # Retorna la ruta completa del archivo
+        return os.path.join(os.path.dirname(__file__), "..", "files", name)
     
     def create_df_cargos(self, name, año):
         
@@ -102,6 +100,8 @@ class ReadExcelHoras:
         # Convertir todas las columnas excepto 'provincia' a tipo entero, manteniendo None como NULL
         for col in df_educacion_comun_horas.columns:
             df_educacion_comun_horas[col] = df_educacion_comun_horas[col].apply(lambda x: None if x is None else int(x))
+        
+        print(df_educacion_comun_horas)
         
         return df_educacion_comun_horas
 
