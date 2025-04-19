@@ -33,38 +33,66 @@ def procesar_ue(resumen, año):
 def procesar_us(resumen, año):
     df = loadExcelUS.create_df_us(resumen, año)
     print(df)
+    valor_ingresado = input("¿Desea continuar? (s/n): ").strip().lower()
+    if valor_ingresado == "s":
+        db.load_data_us(df)
+    else:
+        print("❌ Proceso cancelado.")
     exit()
-    db.load_data_us(df)
 
 def procesar_alumnos(resumen, año):
     df = ReadExcelAlumnos().create_df_alumnos(resumen, año)
+    valor_ingresado = input("¿Desea continuar? (s/n): ").strip().lower()
+    if valor_ingresado == "s":
+        db.load_data_alumnos(df)
+    else:
+        print("❌ Proceso cancelado.")
     exit()
-    db.load_data_alumnos(df)
 
 def procesar_cargos(resumen, año):
     df = ReadExcelCargos().create_df_cargos(resumen, año)
+    valor_ingresado = input("¿Desea continuar? (s/n): ").strip().lower()
+    if valor_ingresado == "s":
+        db.load_data_cargos(df)
+    else:
+        print("❌ Proceso cancelado.")
     exit()
-    db.load_data_cargos(df)
 
 def procesar_horas(resumen, año):
     df = ReadExcelHoras().create_df_cargos(resumen, año)
+    valor_ingresado = input("¿Desea continuar? (s/n): ").strip().lower()
+    if valor_ingresado == "s":
+        db.load_data_horas(df)
+    else:
+        print("❌ Proceso cancelado.")
     exit()
-    db.load_data_horas(df)
 
 def procesar_inicial(nombre, año):
     df = ReadExcelInicialAsistencia().create_df_inicial_asistencia(nombre, año)
+    valor_ingresado = input("¿Desea continuar? (s/n): ").strip().lower()
+    if valor_ingresado == "s":
+        db.load_data_inicial_asistencia(df)
+    else:
+        print("❌ Proceso cancelado.") 
     exit()
-    db.load_data_inicial_asistencia(df)
 
 def procesar_primario(nombre, año):
     df = ReadExcelPrimarioRepitentes().create_df_primario_repitentes(nombre, año)
+    valor_ingresado = input("¿Desea continuar? (s/n): ").strip().lower()
+    if valor_ingresado == "s":
+        db.load_data_primario_repitentes(df)
+    else:
+        print("❌ Proceso cancelado.")
     exit()
-    db.load_data_primario_repitentes(df)
 
 def procesar_secundario(nombre, año):
     df = ReadExcelSecundarioRepitentes().create_df_secundario_repitentes(nombre, año)
-    exit()
-    db.load_data_secundario_repitentes(df)
+    valor_ingresado = input("¿Desea continuar? (s/n): ").strip().lower()
+    if valor_ingresado == "s":
+        db.load_data_secundario_repitentes(df)
+    else:  
+        print("❌ Proceso cancelado.")
+    exit()    
 
 def procesar_todo():
     print("\n🚀 Procesando todos los módulos del Anuario 2023...")
@@ -82,11 +110,11 @@ if __name__ == '__main__':
     host, user, password, dbname = cargar_variables_entorno()
     db = loadDatabase(host, user, password, dbname)
 
-    año = 2022
-    resumen = "2.1. RESUMEN 2022.xlsx"
-    name_inicial = "2.2. INICIAL 2022.xlsx"
-    name_primario = "2.3. PRIMARIO 2022.xlsx"
-    name_secundario = "2.4. SECUNDARIO 2022.xlsx"
+    año = 2018
+    resumen = "2.1. RESUMEN 2023.xlsx"
+    name_inicial = "2.2. INICIAL 2023.xlsx"
+    name_primario = "2.3. PRIMARIO 2023.xlsx"
+    name_secundario = "2.4. SECUNDARIO 2018.xlsx"
 
     print("\n📊 Seleccioná qué dataset querés cargar:")
     print("0. 🔁 Todos")

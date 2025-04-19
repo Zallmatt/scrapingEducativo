@@ -22,7 +22,7 @@ codigo_provincias_normalizado = {
     "San Luis": 74,
     "Santa Cruz": 78,
     "Santa Fe": 82,
-    "Santiago Del Estero": 86,
+    "Santiago del Estero": 86,
     "Tucuman": 90,
-    "Tierra Del Fuego": 94
+    "Tierra del Fuego": 94
 }

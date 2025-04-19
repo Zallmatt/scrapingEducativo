@@ -6,7 +6,7 @@ from utils.normalization import normalize_name
 class ReadExcelCargos:
     def load_route_excel(self, filename):
         """Devuelve la ruta absoluta del archivo dentro de data/files."""
-        return os.path.join(os.path.dirname(__file__), "..", "files", filename)
+        return os.path.join(os.path.dirname(__file__), "..", "files", "resumen", filename)
 
     def create_df_cargos(self, filename, anio):
         sheet_name = "Cargos"
@@ -14,9 +14,9 @@ class ReadExcelCargos:
 
         df = pd.read_excel(file_path, sheet_name=sheet_name, header=None)
 
-        df_provincias = df.iloc[47:73, 0].reset_index(drop=True)
-        df_publico = df.iloc[47:73, 2:10].reset_index(drop=True)
-        df_privado = df.iloc[86:112, 2:10].reset_index(drop=True)
+        df_provincias = df.iloc[44:70, 0].reset_index(drop=True)
+        df_publico = df.iloc[44:70, 2:10].reset_index(drop=True)
+        df_privado = df.iloc[81:107, 2:10].reset_index(drop=True)
 
         df_resultado = pd.DataFrame({
             "año": int(anio),
@@ -50,6 +50,6 @@ class ReadExcelCargos:
         df_resultado["id_provincia"] = df_resultado["id_provincia"].astype("Int64")
 
         print("\n✅ DataFrame de cargos generado:")
-        print(df_resultado.head())
+        print(df_resultado)
 
         return df_resultado

@@ -6,7 +6,7 @@ from utils.mappings import codigo_provincias_normalizado
 class ReadExcelPrimarioRepitentes:
     @staticmethod
     def load_route_excel(name):
-        return os.path.join(os.path.dirname(__file__), "..", "files", name)
+        return os.path.join(os.path.dirname(__file__), "..", "files", "primario", name)
 
     def create_df_primario_repitentes(self, name, año):
         sheet_index = "Alu_Repitientes"
@@ -14,9 +14,9 @@ class ReadExcelPrimarioRepitentes:
 
         df = pd.read_excel(file_path, sheet_name=sheet_index, header=None)
 
-        df_provincias = df.iloc[47:73, 0].reset_index(drop=True)
-        df_publico = df.iloc[47:73, 1:9].reset_index(drop=True)
-        df_privado = df.iloc[87:113, 1:9].reset_index(drop=True)
+        df_provincias = df.iloc[44:70, 0].reset_index(drop=True)
+        df_publico = df.iloc[44:70, 1:9].reset_index(drop=True)
+        df_privado = df.iloc[82:108, 1:9].reset_index(drop=True)
 
         df_resultado = pd.DataFrame({
             "año": int(año),
@@ -53,6 +53,6 @@ class ReadExcelPrimarioRepitentes:
         df_resultado["año"] = int(año)
 
         print("✅ DataFrame de repitencia primaria generado:")
-        print(df_resultado.head())
+        print(df_resultado)
 
         return df_resultado

@@ -4,7 +4,7 @@ import pandas as pd
 class ReadExcelHoras:
     @staticmethod
     def load_route_excel(name):
-        return os.path.join(os.path.dirname(__file__), "..", "files", name)
+        return os.path.join(os.path.dirname(__file__), "..", "files", "resumen", name)
     
     def create_df_cargos(self, name, año):
         
@@ -17,12 +17,9 @@ class ReadExcelHoras:
         df = pd.read_excel(file_path, sheet_name=sheet_index, header=None)
 
         # Extraer las provincias y el año (Columna A, filas 46 a 71 en base 1 → 45 a 70 en base 0)
-        df_provincias = df.iloc[51:77, 0].reset_index(drop=True)  # Columna A (Índice 0)
-        df_datos_publico = df.iloc[51:77, 2:10].reset_index(drop=True)
-        df_datos_privado = df.iloc[94:120, 2:10].reset_index(drop=True)
-
-        print(df_datos_publico)
-        print(df_datos_privado)
+        df_provincias = df.iloc[50:76, 0].reset_index(drop=True)  # Columna A (Índice 0)
+        df_datos_publico = df.iloc[50:76, 2:10].reset_index(drop=True)
+        df_datos_privado = df.iloc[92:118, 2:10].reset_index(drop=True)
 
         # Crear un DataFrame con la estructura esperada
         columns = [

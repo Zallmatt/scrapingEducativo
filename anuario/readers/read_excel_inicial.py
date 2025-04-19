@@ -6,7 +6,7 @@ from utils.mappings import codigo_provincias_normalizado
 class ReadExcelInicialAsistencia:
     @staticmethod
     def load_route_excel(name):
-        return os.path.join(os.path.dirname(__file__), "..", "files", name)
+        return os.path.join(os.path.dirname(__file__), "..", "files", "inicial", name)
 
     def create_df_inicial_asistencia(self, filename, año):
         sheet_name = "Alu_asistencia 5"
@@ -18,7 +18,7 @@ class ReadExcelInicialAsistencia:
         # Provincias y datos públicos y privados
         df_provincias = df.iloc[41:67, 0].reset_index(drop=True)
         df_publico = df.iloc[41:67, 1:3].reset_index(drop=True)
-        df_privado = df.iloc[76:102, 1:3].reset_index(drop=True)
+        df_privado = df.iloc[77:103, 1:3].reset_index(drop=True)
 
         df_resultado = pd.DataFrame({
             "año": int(año),
@@ -45,6 +45,6 @@ class ReadExcelInicialAsistencia:
         df_resultado["año"] = int(año)
 
         print("✅ DataFrame de asistencia inicial generado:")
-        print(df_resultado.head())
+        print(df_resultado)
 
         return df_resultado

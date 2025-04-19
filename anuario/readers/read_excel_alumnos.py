@@ -6,7 +6,7 @@ from utils.normalization import normalize_name
 class ReadExcelAlumnos:
     def load_route_excel(self, filename):
         """Retorna la ruta absoluta del archivo en la carpeta 'files'."""
-        return os.path.join(os.path.dirname(__file__), "..", "files", filename)
+        return os.path.join(os.path.dirname(__file__), "..", "files", "resumen", filename)
 
     def create_df_alumnos(self, filename, año):
         sheet_name = "Alumnos"
@@ -15,9 +15,9 @@ class ReadExcelAlumnos:
         df = pd.read_excel(file_path, sheet_name=sheet_name, header=None)
 
         # Extraer datos desde celdas específicas
-        df_provincias = df.iloc[42:68, 0].reset_index(drop=True)
-        df_publico = df.iloc[42:68, 2:6].reset_index(drop=True)
-        df_privado = df.iloc[77:103, 2:6].reset_index(drop=True)
+        df_provincias = df.iloc[41:67, 0].reset_index(drop=True)
+        df_publico = df.iloc[41:67, 2:6].reset_index(drop=True)
+        df_privado = df.iloc[76:102, 2:6].reset_index(drop=True)
 
         # Crear DataFrame base
         df_resultado = pd.DataFrame({
@@ -48,6 +48,6 @@ class ReadExcelAlumnos:
         df_resultado["id_provincia"] = df_resultado["id_provincia"].astype("Int64")
 
         print("✅ DataFrame de alumnos generado:")
-        print(df_resultado.head())
+        print(df_resultado)
 
         return df_resultado

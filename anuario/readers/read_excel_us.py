@@ -2,23 +2,27 @@ import os
 import pandas as pd
 
 class loadExcelUS:
+    comienzo_columas = 45
+    final_columnas = 71
+    comienzo_columas_privado = 82
+    final_columnas_privado = 108
     @staticmethod
     def load_route_excel(name):
-        return os.path.join(os.path.dirname(__file__), "..", "files", name)
+        return os.path.join(os.path.dirname(__file__), "..", "files", "resumen", name)
 
     @staticmethod
     def create_df_us(name, año, sheet_index=2):
-        """Carga los datos de la segunda hoja del Excel, tomando provincias de la fila 46 a la 71 y agrega los datos de nivel inicial desde loadEUInicial"""
+        """Carga los datos de la segunda hoja del Excel, tomando provincias de la fila 46 a la loadExcelUS.final_columnas y agrega los datos de nivel inicial desde loadEUInicial"""
         file_path = loadExcelUS.load_route_excel(name)
 
         # Cargar la segunda hoja del archivo Excel
         df = pd.read_excel(file_path, sheet_name=sheet_index, header=None)
 
-        # Extraer las provincias y el año (Columna A, filas 46 a 71 en base 1 → 45 a 70 en base 0)
-        df_provincias = df.iloc[45:71, 0].reset_index(drop=True)  # Columna A (Índice 0)
+        # Extraer las provincias y el año (Columna A, filas 46 a loadExcelUS.final_columnas en base 1 → loadExcelUS.comienzo_columas a 70 en base 0)
+        df_provincias = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 0].reset_index(drop=True)  # Columna A (Índice 0)
 
         # Extraer las demás columnas necesarias
-        df_data = df.iloc[45:71, 1:].reset_index(drop=True)  # Desde la segunda columna en adelante
+        df_data = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 1:].reset_index(drop=True)  # Desde la segunda columna en adelante
 
         # Crear un DataFrame con la estructura esperada
         columns = [
@@ -89,17 +93,17 @@ class loadExcelUS:
     
     @staticmethod
     def read_us_localizaciones(name, año, sheet_index=2):
-        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
+        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a loadExcelUS.final_columnas) y suma las columnas necesarias."""
         file_path = loadExcelUS.load_route_excel(name)
 
         # Cargar la segunda hoja del archivo Excel
         df = pd.read_excel(file_path, sheet_name=sheet_index, header=None)
 
-        # Extraer las provincias (Columna A, filas 46 a 71 → Índices 45 a 70)
-        df_provincias = df.iloc[45:71, 0].reset_index(drop=True)  # Columna A (Índice 0)
+        # Extraer las provincias (Columna A, filas 46 a loadExcelUS.final_columnas → Índices loadExcelUS.comienzo_columas a 70)
+        df_provincias = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 0].reset_index(drop=True)  # Columna A (Índice 0)
 
         # Extraer datos de nivel inicial PRIVADO (Columnas E, F y G → Índices 4, 5 y 6)
-        df_data_privado = df.iloc[82:108, 1].reset_index(drop=True)
+        df_data_privado = df.iloc[loadExcelUS.comienzo_columas_privado:loadExcelUS.final_columnas_privado, 1].reset_index(drop=True)
         df_data_privado = df_data_privado.apply(pd.to_numeric, errors='coerce').fillna(0)
 
         # Definir las columnas esperadas
@@ -120,20 +124,20 @@ class loadExcelUS:
 
     @staticmethod
     def read_us_inicial(name, año, sheet_index=2):
-        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
+        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a loadExcelUS.final_columnas) y suma las columnas necesarias."""
         file_path = loadExcelUS.load_route_excel(name)
 
         # Cargar la segunda hoja del archivo Excel
         df = pd.read_excel(file_path, sheet_name=sheet_index, header=None)
 
-        # Extraer las provincias (Columna A, filas 46 a 71 → Índices 45 a 70)
-        df_provincias = df.iloc[45:71, 0].reset_index(drop=True)  # Columna A (Índice 0)
+        # Extraer las provincias (Columna A, filas 46 a loadExcelUS.final_columnas → Índices loadExcelUS.comienzo_columas a 70)
+        df_provincias = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 0].reset_index(drop=True)  # Columna A (Índice 0)
 
         # Extraer datos de nivel inicial PÚBLICO (Columnas E, F y G → Índices 4, 5 y 6)
-        df_data_publico = df.iloc[45:71, 4:7].reset_index(drop=True)
+        df_data_publico = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 4:7].reset_index(drop=True)
 
         # Extraer datos de nivel inicial PRIVADO (Columnas E, F y G → Índices 4, 5 y 6)
-        df_data_privado = df.iloc[82:108, 4:7].reset_index(drop=True)
+        df_data_privado = df.iloc[loadExcelUS.comienzo_columas_privado:loadExcelUS.final_columnas_privado, 4:7].reset_index(drop=True)
         
         df_data_publico = df_data_publico.apply(pd.to_numeric, errors='coerce').fillna(0)
         df_data_privado = df_data_privado.apply(pd.to_numeric, errors='coerce').fillna(0)
@@ -164,20 +168,20 @@ class loadExcelUS:
     
     @staticmethod
     def read_us_primaria(name, año, sheet_index=2):
-        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
+        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a loadExcelUS.final_columnas) y suma las columnas necesarias."""
         file_path = loadExcelUS.load_route_excel(name)
 
         # Cargar la segunda hoja del archivo Excel
         df = pd.read_excel(file_path, sheet_name=sheet_index, header=None)
 
-        # Extraer las provincias (Columna A, filas 46 a 71 → Índices 45 a 70)
-        df_provincias = df.iloc[45:71, 0].reset_index(drop=True)  # Columna A (Índice 0)
+        # Extraer las provincias (Columna A, filas 46 a loadExcelUS.final_columnas → Índices loadExcelUS.comienzo_columas a 70)
+        df_provincias = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 0].reset_index(drop=True)  # Columna A (Índice 0)
 
         # Extraer datos de nivel inicial PÚBLICO (Columnas E, F y G → Índices 4, 5 y 6)
-        df_data_publico = df.iloc[45:71, 7:9].reset_index(drop=True)
+        df_data_publico = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 7:9].reset_index(drop=True)
 
         # Extraer datos de nivel inicial PRIVADO (Columnas E, F y G → Índices 4, 5 y 6)
-        df_data_privado = df.iloc[82:108, 7:9].reset_index(drop=True)
+        df_data_privado = df.iloc[loadExcelUS.comienzo_columas_privado:loadExcelUS.final_columnas_privado, 7:9].reset_index(drop=True)
         
         df_data_publico = df_data_publico.apply(pd.to_numeric, errors='coerce').fillna(0)
         df_data_privado = df_data_privado.apply(pd.to_numeric, errors='coerce').fillna(0)
@@ -207,20 +211,20 @@ class loadExcelUS:
     
     @staticmethod
     def read_us_secundaria(name, año, sheet_index=2):
-        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
+        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a loadExcelUS.final_columnas) y suma las columnas necesarias."""
         file_path = loadExcelUS.load_route_excel(name)
 
         # Cargar la segunda hoja del archivo Excel
         df = pd.read_excel(file_path, sheet_name=sheet_index, header=None)
 
-        # Extraer las provincias (Columna A, filas 46 a 71 → Índices 45 a 70)
-        df_provincias = df.iloc[45:71, 0].reset_index(drop=True)  # Columna A (Índice 0)
+        # Extraer las provincias (Columna A, filas 46 a loadExcelUS.final_columnas → Índices loadExcelUS.comienzo_columas a 70)
+        df_provincias = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 0].reset_index(drop=True)  # Columna A (Índice 0)
 
         # Extraer datos de nivel inicial PÚBLICO (Columnas E, F y G → Índices 4, 5 y 6)
-        df_data_publico = df.iloc[45:71, 9:12].reset_index(drop=True)
+        df_data_publico = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 9:12].reset_index(drop=True)
 
         # Extraer datos de nivel inicial PRIVADO (Columnas E, F y G → Índices 4, 5 y 6)
-        df_data_privado = df.iloc[82:108, 9:12].reset_index(drop=True)
+        df_data_privado = df.iloc[loadExcelUS.comienzo_columas_privado:loadExcelUS.final_columnas_privado, 9:12].reset_index(drop=True)
         
         df_data_publico = df_data_publico.apply(pd.to_numeric, errors='coerce').fillna(0)
         df_data_privado = df_data_privado.apply(pd.to_numeric, errors='coerce').fillna(0)
@@ -251,20 +255,20 @@ class loadExcelUS:
     
     @staticmethod
     def read_us_no_universitario(name, año, sheet_index=2):
-        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a 71) y suma las columnas necesarias."""
+        """Carga datos de nivel inicial desde la segunda hoja del Excel (filas 46 a loadExcelUS.final_columnas) y suma las columnas necesarias."""
         file_path = loadExcelUS.load_route_excel(name)
 
         # Cargar la segunda hoja del archivo Excel
         df = pd.read_excel(file_path, sheet_name=sheet_index, header=None)
 
-        # Extraer las provincias (Columna A, filas 46 a 71 → Índices 45 a 70)
-        df_provincias = df.iloc[45:71, 0].reset_index(drop=True)  # Columna A (Índice 0)
+        # Extraer las provincias (Columna A, filas 46 a loadExcelUS.final_columnas → Índices loadExcelUS.comienzo_columas a 70)
+        df_provincias = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 0].reset_index(drop=True)  # Columna A (Índice 0)
 
         # Extraer datos de nivel inicial PÚBLICO (Columnas E, F y G → Índices 4, 5 y 6)
-        df_data_publico = df.iloc[45:71, 12].reset_index(drop=True)
+        df_data_publico = df.iloc[loadExcelUS.comienzo_columas:loadExcelUS.final_columnas, 12].reset_index(drop=True)
 
         # Extraer datos de nivel inicial PRIVADO (Columnas E, F y G → Índices 4, 5 y 6)
-        df_data_privado = df.iloc[82:108, 12].reset_index(drop=True)
+        df_data_privado = df.iloc[loadExcelUS.comienzo_columas_privado:loadExcelUS.final_columnas_privado, 12].reset_index(drop=True)
         
         df_data_publico = df_data_publico.apply(pd.to_numeric, errors='coerce').fillna(0)
         df_data_privado = df_data_privado.apply(pd.to_numeric, errors='coerce').fillna(0)

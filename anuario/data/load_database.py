@@ -41,7 +41,7 @@ class loadDatabase:
         try:
             engine = create_engine(f"mysql+pymysql://{self.user}:{self.password}@{self.host}:3306/{self.database}")
             with engine.connect() as connection:
-                df.to_sql(name=table_name, con=connection, if_exists='replace', index=False)
+                df.to_sql(name=table_name, con=connection, if_exists='append', index=False)
             print(f"✅ Datos cargados correctamente en la tabla `{table_name}`.")
         except Exception as e:
             print(f"❌ Error al cargar datos a `{table_name}`: {e}")
